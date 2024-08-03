@@ -21,4 +21,8 @@ export class UserService {
       
           return user;
     }
+
+    async getAlUser(): Promise<User[]> {
+        return this.users;
+    }
 }
