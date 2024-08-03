@@ -5,16 +5,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: ['.env.development.local'],
-    }),
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      database: process.env.DB_DATABASE,
       host: process.env.DB_HOST,
-      password: process.env.DB_PASSWORD,
       port: Number(process.env.DB_PORT),
-      username: process.env.DB_USERNAME,
+      database: process.env.DB_DATABASE,
+      // username: process.env.DB_USERNAME,
+      // password: process.env.DB_PASSWORD,
+      username: "postgres",
+      password: "postgres",
+      synchronize: true,
+      logging: false,
     }),
     UserModule,
   ],
