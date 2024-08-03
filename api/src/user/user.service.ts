@@ -5,14 +5,20 @@ import { hash } from 'bcrypt';
 
 @Injectable()
 export class UserService {
-    
+    private users: User[] = [];
+
     async createUser(createUserDto: CreateUserDto): Promise<User> {
         const saltOrRounds = 10;
         const passwordHashed = await hash(createUserDto.password, saltOrRounds);
-        return{
+      
+        const user: User = {
             ...createUserDto,
-            id:1,
+            id: this.users.length + 1,
             password: passwordHashed,
-        }
+          };
+      
+          this.users.push(user);
+      
+          return user;
     }
 }
