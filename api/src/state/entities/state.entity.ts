@@ -7,7 +7,7 @@ import {
     UpdateDateColumn,
   } from 'typeorm';
 
-  import { CityEntity } from 'src/city/entities/city.entity';
+  import { CityEntity } from '../../city/entities/city.entity';
   
   @Entity({ name: 'state' })
   export class StateEntity {

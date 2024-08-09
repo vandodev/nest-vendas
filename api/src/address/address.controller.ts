@@ -5,12 +5,12 @@ import {
     UsePipes,
     ValidationPipe,
   } from '@nestjs/common';
-  import { Roles } from 'src/decorators/roles.decorator';
-  import { UserType } from 'src/user/enum/user-type.enum';
+  import { Roles } from '../decorators/roles.decorator';
+  import { UserType } from '../user/enum/user-type.enum';
   import { AddressService } from './address.service';
   import { CreateAddressDto } from './dtos/createAddress.dto';
   import { AddressEntity } from './entities/address.entity';
-  import { UserId } from 'src/decorators/user-id.decorator';
+  import { UserId } from '../decorators/user-id.decorator';
 
 @Roles(UserType.Admin)
 @Controller('address')
