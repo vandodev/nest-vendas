@@ -2,6 +2,7 @@ import {
     Body,
     Controller,
     Post,
+    Get,
     UsePipes,
     ValidationPipe,
   } from '@nestjs/common';
@@ -11,8 +12,9 @@ import {
   import { CreateAddressDto } from './dtos/createAddress.dto';
   import { AddressEntity } from './entities/address.entity';
   import { UserId } from '../decorators/user-id.decorator';
+  import { ReturnAddressDto } from './dtos/returnAddress.dto';
 
-@Roles(UserType.Admin)
+@Roles(UserType.User, UserType.Admin)
 @Controller('address')
 export class AddressController {
     constructor(private readonly addressService: AddressService) {}
@@ -26,4 +28,13 @@ export class AddressController {
       // console.log('DTO:', createAddressDto);
       return this.addressService.createAddress(createAddressDto, userId);
     }
+
+    @Get()
+  async findAddressByUserId(
+    @UserId() userId: number,
+  ): Promise<ReturnAddressDto[]> {
+    return (await this.addressService.findAddressByUserId(userId)).map(
+      (address) => new ReturnAddressDto(address),
+    );
+  }
 }
