@@ -21,16 +21,16 @@ describe('ProductService', () => {
         {
           provide: CategoryService,
           useValue: {
-            findOne: jest.fn().mockResolvedValue(productMock),
             findCategoryById: jest.fn().mockResolvedValue(categoryMock),
-            delete: jest.fn().mockResolvedValue(returnDeleteMock),
           },
         },
         {
           provide: getRepositoryToken(ProductEntity),
           useValue: {
             find: jest.fn().mockResolvedValue([productMock]),
+            findOne: jest.fn().mockResolvedValue(productMock),
             save: jest.fn().mockResolvedValue(productMock),
+            delete: jest.fn().mockResolvedValue(returnDeleteMock),
           },
         },
       ],
