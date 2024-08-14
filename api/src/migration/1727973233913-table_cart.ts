@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class TableCart1726152591056 implements MigrationInterface {
+export class TableCart1727973233913 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         queryRunner.query(`
@@ -33,3 +33,4 @@ export class TableCart1726152591056 implements MigrationInterface {
             `);
       }
     }
+
