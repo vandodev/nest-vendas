@@ -2,6 +2,8 @@ import {
     Body,
     Controller,
     Post,
+    Delete,
+    Get,
     UsePipes,
     ValidationPipe,
 } from '@nestjs/common';
@@ -27,4 +29,12 @@ export class CartController {
         await this.cartService.insertProductInCart(insertCart, userId),
       );
     }
+
+  @Get()
+  async findCartByUserId(@UserId() userId: number): Promise<ReturnCartDTO> {
+    return new ReturnCartDTO(
+      await this.cartService.findCartByUserId(userId, true),
+    );
+  }
+
 }

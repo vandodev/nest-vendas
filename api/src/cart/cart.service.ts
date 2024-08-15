@@ -57,6 +57,6 @@ export class CartService {
 
     await this.cartProductService.insertProductInCart(insertCartDTO, cart);
 
-    return this.findCartByUserId(userId, true);
+    return cart;
   }
 }
