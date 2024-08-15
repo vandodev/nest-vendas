@@ -6,7 +6,7 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
   } from 'typeorm';
-  import { CartProdutEntity } from 'src/cart-product/entities/cart-product.entity';
+  import { CartProductEntity } from 'src/cart-product/entities/cart-product.entity';
   
   @Entity({ name: 'cart' })
   export class CartEntity {
@@ -15,6 +15,9 @@ import {
   
     @Column({ name: 'user_id', nullable: false })
     userId: number;
+
+    @Column({ name: 'active', nullable: false })
+    active: boolean;
   
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
@@ -22,6 +25,6 @@ import {
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
 
-    @OneToMany(() => CartProdutEntity, (cartProduct) => cartProduct.cart)
-    cartProduct?: CartProdutEntity[];
+    @OneToMany(() => CartProductEntity, (cartProduct) => cartProduct.cart)
+    cartProduct?: CartProductEntity[];
   }

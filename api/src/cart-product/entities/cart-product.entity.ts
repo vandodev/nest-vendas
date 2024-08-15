@@ -34,12 +34,10 @@ export class CartProductEntity {
     () => ProductEntity,
     (productEntity: ProductEntity) => productEntity.cartProduct,
   )
-
   @JoinColumn({ name: 'product_id', referencedColumnName: 'id' })
   product?: ProductEntity;
 
   @ManyToOne(() => CartEntity, (cartEntity) => cartEntity.cartProduct)
-  
   @JoinColumn({ name: 'cart_id', referencedColumnName: 'id' })
   cart?: CartEntity;
 }

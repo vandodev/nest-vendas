@@ -40,6 +40,7 @@ export class CartProductService {
       cartId,
     });
   }
+  
   async insertProductInCart(
     insertCartDTO: InsertCartDTO,
     cart: CartEntity,

@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CartEntity } from './entities/cart.entity';
-import { InsertCartDTO } from './dtos/insert-cart.dto';
 import { CartProductService } from 'src/cart-product/cart-product.service';
+import { Repository } from 'typeorm';
+import { InsertCartDTO } from './dtos/insert-cart.dto';
+import { CartEntity } from './entities/cart.entity';
 
 @Injectable()
 export class CartService {
@@ -13,22 +13,37 @@ export class CartService {
     private readonly cartProductService: CartProductService,
   ) {}
 
-  async verifyActiveCart(userId: number): Promise<CartEntity> {
+  async findCartByUserId(
+    userId: number,
+    isRelations?: boolean,
+  ): Promise<CartEntity> {
+    const relations = isRelations
+      ? {
+          cartProduct: {
+            product: true,
+          },
+        }
+      : undefined;
+
     const cart = await this.cartRepository.findOne({
       where: {
         userId,
+        active: true,
       },
+      relations,
     });
+
     if (!cart) {
       throw new NotFoundException(`Cart active not found`);
     }
+
     return cart;
   }
 
   async createCart(userId: number): Promise<CartEntity> {
     return this.cartRepository.save({
-      active: true,
       userId,
+      active: true,
     });
   }
 
@@ -36,10 +51,12 @@ export class CartService {
     insertCartDTO: InsertCartDTO,
     userId: number,
   ): Promise<CartEntity> {
-    const cart = await this.verifyActiveCart(userId).catch(async () => {
+    const cart = await this.findCartByUserId(userId).catch(async () => {
       return this.createCart(userId);
     });
+
     await this.cartProductService.insertProductInCart(insertCartDTO, cart);
-    return cart;
+
+    return this.findCartByUserId(userId, true);
   }
 }
