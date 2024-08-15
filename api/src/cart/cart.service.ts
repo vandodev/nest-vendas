@@ -73,4 +73,12 @@ export class CartService {
 
     return cart;
   }
+
+  async deleteProductCart(
+    productId: number,
+    userId: number,
+  ): Promise<DeleteResult> {
+    const cart = await this.findCartByUserId(userId);
+    return this.cartProductService.deleteProductCart(productId, cart.id);
+  }
 }

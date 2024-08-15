@@ -2,6 +2,7 @@ import {
     Body,
     Controller,
     Post,
+    Param,
     Delete,
     Get,
     UsePipes,
@@ -41,6 +42,14 @@ export class CartController {
   @Delete()
   async clearCart(@UserId() userId: number): Promise<DeleteResult> {
     return this.cartService.clearCart(userId);
+  }
+
+  @Delete('/product/:productId')
+  async deleteProductCart(
+    @Param('productId') productId: number,
+    @UserId() userId: number,
+  ): Promise<DeleteResult> {
+    return this.cartService.deleteProductCart(productId, userId);
   }
 
 }
