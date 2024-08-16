@@ -5,6 +5,7 @@ import {
     Param,
     Delete,
     Get,
+    Patch,
     UsePipes,
     ValidationPipe,
 } from '@nestjs/common';
@@ -16,6 +17,8 @@ import { CartService } from './cart.service';
 import { InsertCartDTO } from './dtos/insert-cart.dto';
 import { ReturnCartDTO } from './dtos/return-cart.dto';
 import { DeleteResult } from 'typeorm';
+import { UpdateCartDTO } from './dtos/update-cart.dto';
+import { CartEntity } from './entities/cart.entity';
 
 @Roles(UserType.User, UserType.Admin)
 @Controller('cart')
@@ -50,6 +53,17 @@ export class CartController {
     @UserId() userId: number,
   ): Promise<DeleteResult> {
     return this.cartService.deleteProductCart(productId, userId);
+  }
+
+  @UsePipes(ValidationPipe)
+  @Patch()
+  async updateProductInCart(
+    @Body() updateCartDTO: UpdateCartDTO,
+    @UserId() userId: number,
+  ): Promise<ReturnCartDTO> {
+    return new ReturnCartDTO(
+      await this.cartService.updateProductInCart(updateCartDTO, userId),
+    );
   }
 
 }
