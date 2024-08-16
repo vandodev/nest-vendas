@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import { ProductEntity } from '../entities/product.entity';
 import { ProductService } from '../product.service';
 import { productMock } from '../__mocks__/product.mock';
-import { returnDeleteMock } from '../__mocks__/return-delete.mock';
+import { returnDeleteMock } from '../../__mocks__/return-delete.mock';
 
 describe('ProductService', () => {
   let service: ProductService;
