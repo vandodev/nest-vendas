@@ -1,2 +1,3 @@
-create-db.sql/
-postgres-data/
+postgres-data/global/pg_control
+postgres-data/pg_xact/0000
+postgres-data/postmaster.pid
