@@ -10,8 +10,8 @@ import {
     UpdateDateColumn,
   } from 'typeorm';
 
-  import { OrderEntity } from 'src/order/entities/order.entity';
-  import { PaymentStatusEntity } from 'src/payment-status/entities/payment-status.entity';
+import { OrderEntity } from '../../order/entities/order.entity';
+import { PaymentStatusEntity } from '../../payment-status/entities/payment-status.entity';
   
   @Entity({ name: 'payment' })
   @TableInheritance({ column: { type: 'varchar', name: 'type' } })
