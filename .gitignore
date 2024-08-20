@@ -1,3 +1,2 @@
-postgres-data/global/pg_control
-postgres-data/pg_xact/0000
-postgres-data/postmaster.pid
+create-db.sql/
+postgres-data/
