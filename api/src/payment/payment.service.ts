@@ -1,11 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateOrderDTO } from 'src/order/dtos/create-order.dto';
-import { PaymentType } from 'src/payment-status/enums/payment-type.enum';
+import { CreateOrderDTO } from '../order/dtos/create-order.dto';
+import { PaymentType } from '../payment-status/enums/payment-type.enum';
 import { Repository } from 'typeorm';
 import { PaymentCreditCardEntity } from './entities/payment-credit-card.entity';
 import { PaymentPixEntity } from './entities/payment-pix.entity';
 import { PaymentEntity } from './entities/payment.entity';
+import { CartProductEntity } from '../cart-product/entities/cart-product.entity';
+import { CartEntity } from '../cart/entities/cart.entity';
+import { ProductEntity } from '../product/entities/product.entity';
 
 @Injectable()
 export class PaymentService {
@@ -14,22 +17,40 @@ export class PaymentService {
       private readonly paymentRepository: Repository<PaymentEntity>,
     ) {}
   
-    async createPayment(createOrderDTO: CreateOrderDTO): Promise<PaymentEntity> {
-      if (createOrderDTO.amountPayments) {
-        const paymentCreditCard = new PaymentCreditCardEntity(
-          PaymentType.Done,
-          0,
-          0,
-          0,
-          createOrderDTO,
-        );
-        return this.paymentRepository.save(paymentCreditCard);
+    async createPayment(
+      createOrderDTO: CreateOrderDTO,
+      products: ProductEntity[],
+      cart: CartEntity,
+    ): Promise<PaymentEntity> {
+      const finalPrice = cart.cartProduct
+        ?.map((cartProduct: CartProductEntity) => {
+          const product = products.find(
+            (product) => product.id === cartProduct.productId,
+          );
+          console.log('product', products);
+          if (product) {
+            return cartProduct.amount * product.price;
+          }
+  
+          return 0;
+        })
+        .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  
+        if (createOrderDTO.amountPayments) {
+          const paymentCreditCard = new PaymentCreditCardEntity(
+            PaymentType.Done,
+            finalPrice,
+            0,
+            finalPrice,
+            createOrderDTO,
+          );
+          return this.paymentRepository.save(paymentCreditCard);
       } else if (createOrderDTO.codePix && createOrderDTO.datePayment) {
         const paymentPix = new PaymentPixEntity(
           PaymentType.Done,
+          finalPrice,
           0,
-          0,
-          0,
+          finalPrice,
           createOrderDTO,
         );
         return this.paymentRepository.save(paymentPix);
