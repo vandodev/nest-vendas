@@ -46,4 +46,16 @@ import { PaymentStatusEntity } from '../../payment-status/entities/payment-statu
     @ManyToOne(() => PaymentStatusEntity, (payment) => payment.payments)
     @JoinColumn({ name: 'status_id', referencedColumnName: 'id' })
     paymentStatus?: PaymentStatusEntity;
+
+    constructor(
+      statusId: number,
+      price: number,
+      discount: number,
+      finalPrice: number,
+    ) {
+      this.statusId = statusId;
+      this.price = price;
+      this.discount = discount;
+      this.finalPrice = finalPrice;
+    }
   }
