@@ -38,12 +38,17 @@ export class OrderService {
     
     const cart = await this.cartService.findCartByUserId(userId, true);
 
+    const products = await this.productService.findAll(
+      cart.cartProduct?.map((cartProduct) => cartProduct.productId),
+    );
+
      await Promise.all(
       cart.cartProduct?.map((cartProduct) =>
         this.orderProductService.createOrderProduct(
           cartProduct.productId,
           order.id,
-          0,
+          products.find((product) => product.id === cartProduct.productId)
+            ?.price || 0,
           cartProduct.amount,
         ),
       ),
