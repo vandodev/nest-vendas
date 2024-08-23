@@ -6,7 +6,7 @@ import { paymentCreditCardMock } from '../../payment/__mocks__/payment-credit-ca
 export const createOrderPixMock: CreateOrderDTO = {
   addressId: addressMock.id,
   codePix: paymentPixMock.code,
-  datePayment: '2020-01-01',
+  datePayment: '2024-10-01',
 };
 
 export const createOrderCreditCardMock: CreateOrderDTO = {
