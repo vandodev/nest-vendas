@@ -23,7 +23,7 @@ import {
     productId: number;
   
     @Column({ name: 'amount', nullable: false })
-    amount: Date;
+    amount: number;
   
     @Column({ name: 'price', nullable: false })
     price: number;
