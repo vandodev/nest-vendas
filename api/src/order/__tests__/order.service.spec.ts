@@ -1,4 +1,4 @@
-import { Test, TestingModule, } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CartService } from '../../cart/cart.service';
 import { OrderProductService } from '../../order-product/order-product.service';
@@ -7,17 +7,17 @@ import { ProductService } from '../../product/product.service';
 import { Repository } from 'typeorm';
 import { OrderEntity } from '../entities/order.entity';
 import { OrderService } from '../order.service';
-import { paymentMock } from '../../payment/__mocks__/payment.mock';
-import { userEntityMock } from '../../user/__mocks__/user.mock';
 import { orderMock } from '../__mocks__/order.mock';
-import { cartMock } from '../../cart/__mocks__/cart.mock';
+import { userEntityMock } from '../../user/__mocks__/user.mock';
+import { NotFoundException } from '@nestjs/common';
 import { orderProductMock } from '../../order-product/__mocks__/order-product.mock';
+import { cartMock } from '../../cart/__mocks__/cart.mock';
 import { productMock } from '../../product/__mocks__/product.mock';
 import { cartProductMock } from '../../cart-product/__mocks__/cart-product.mock';
 import { createOrderPixMock } from '../__mocks__/create-order.mock';
-import { NotFoundException } from '@nestjs/common';
+import { paymentMock } from '../../payment/__mocks__/payment.mock';
 
-jest.useFakeTimers().setSystemTime(new Date('2024-11-12'));
+jest.useFakeTimers().setSystemTime(new Date('2020-01-01'));
 
 describe('OrderService', () => {
   let service: OrderService;
@@ -90,7 +90,10 @@ describe('OrderService', () => {
 
   it('should return orders in findOrdersByUserId', async () => {
     const spy = jest.spyOn(orderRepositoty, 'find');
-    const orders = await service.findOrdersByUserId(userEntityMock.id);
+    const userId = userEntityMock.id; 
+  
+    const orders = await service.findOrdersByUserId(userId);
+  
     expect(orders).toEqual([orderMock]);
     expect(spy.mock.calls[0][0]).toEqual({
       where: {
@@ -104,8 +107,17 @@ describe('OrderService', () => {
         payment: {
           paymentStatus: true,
         },
+        user: false
       },
     });
+  });
+
+  it('should return NotFoundException in find return empty', async () => {
+    jest.spyOn(orderRepositoty, 'find').mockResolvedValue([]);
+
+    expect(service.findOrdersByUserId(userEntityMock.id)).rejects.toThrowError(
+      NotFoundException,
+    );
   });
 
   it('should call createOrderProduct amount cartProduct in cart', async () => {
@@ -113,6 +125,7 @@ describe('OrderService', () => {
       orderProductService,
       'createOrderProduct',
     );
+
     const createOrderProductUsingCart =
       await service.createOrderProductUsingCart(
         {
@@ -122,6 +135,7 @@ describe('OrderService', () => {
         orderMock.id,
         [productMock],
       );
+
     expect(createOrderProductUsingCart).toEqual([
       orderProductMock,
       orderProductMock,
@@ -131,11 +145,13 @@ describe('OrderService', () => {
 
   it('should return order in saveOrder', async () => {
     const spy = jest.spyOn(orderRepositoty, 'save');
+
     const order = await service.saveOrder(
       createOrderPixMock,
       userEntityMock.id,
       paymentMock,
     );
+
     expect(order).toEqual(orderMock);
     expect(spy.mock.calls[0][0]).toEqual({
       addressId: createOrderPixMock.addressId,
@@ -147,6 +163,7 @@ describe('OrderService', () => {
 
   it('should expection in error save', async () => {
     jest.spyOn(orderRepositoty, 'save').mockRejectedValue(new Error());
+
     expect(
       service.saveOrder(createOrderPixMock, userEntityMock.id, paymentMock),
     ).rejects.toThrowError();
@@ -162,10 +179,12 @@ describe('OrderService', () => {
     );
     const spyPaymentService = jest.spyOn(paymentService, 'createPayment');
     const spySave = jest.spyOn(orderRepositoty, 'save');
+
     const order = await service.createOrder(
       createOrderPixMock,
       userEntityMock.id,
     );
+
     expect(order).toEqual(orderMock);
     expect(spyCartService.mock.calls.length).toEqual(1);
     expect(spyProductService.mock.calls.length).toEqual(1);
@@ -178,6 +197,7 @@ describe('OrderService', () => {
   it('should return orders', async () => {
     const spy = jest.spyOn(orderRepositoty, 'find');
     const orders = await service.findAllOrders();
+
     expect(orders).toEqual([orderMock]);
     expect(spy.mock.calls[0][0]).toEqual({
       relations: {
@@ -185,11 +205,12 @@ describe('OrderService', () => {
       },
     });
   });
+
   it('should error in not found', async () => {
     jest.spyOn(orderRepositoty, 'find').mockResolvedValue([]);
+
     expect(service.findAllOrders()).rejects.toThrowError(
       new NotFoundException('Orders not found'),
     );
   });
-
 });
