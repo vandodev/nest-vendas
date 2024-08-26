@@ -7,6 +7,8 @@ import {
 import { AxiosError, AxiosResponse } from 'axios';
 import { CityService } from '../city/city.service';
 import { ReturnCepExternal } from './dto/return-cep-external.dto';
+import { CityEntity } from 'src/city/entities/city.entity';
+import { ReturnCep } from './dto/return-cep.dto';
 
 @Injectable()
 export class CorreiosService {
@@ -17,7 +19,7 @@ export class CorreiosService {
     private readonly cityService: CityService,
   ) {}
   
-  async findAddressByCep(cep: string): Promise<ReturnCepExternal> {
+  async findAddressByCep(cep: string): Promise<ReturnCep> {
     const returnCep: ReturnCepExternal = await this.httpService.axiosRef
       .get<ReturnCepExternal>(this.URL_CORREIOS.replace('{CEP}', cep))
       .then((result) => {
@@ -32,11 +34,10 @@ export class CorreiosService {
         );
       });
 
-      const city = await this.cityService.findCityByName(
-        returnCep.localidade,
-        returnCep.uf,
-      );
-      console.log('city', city);
-      return returnCep;
+      const city: CityEntity | undefined = await this.cityService
+      .findCityByName(returnCep.localidade, returnCep.uf)
+      .catch(() => undefined);
+
+       return new ReturnCep(returnCep, city?.id, city?.state?.id);
   }
 }
