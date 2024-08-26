@@ -19,6 +19,9 @@ import {
   
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
+
+    @Column({ name: 'uf', nullable: false })
+    uf: string;
   
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
