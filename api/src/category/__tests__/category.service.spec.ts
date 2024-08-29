@@ -135,7 +135,7 @@ describe('CategoryService', () => {
       },
     });
   });
-
+  
   it('should return error if category with relations', async () => {
     jest.spyOn(categoryRepository, 'findOne').mockResolvedValue({
       ...categoryMock,
